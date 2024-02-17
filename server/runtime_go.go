@@ -27,6 +27,7 @@ import (
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/rtapi"
 	"github.com/heroiclabs/nakama-common/runtime"
+	"github.com/heroiclabs/nakama/v3/jumpgo"
 	"github.com/heroiclabs/nakama/v3/social"
 	"go.uber.org/atomic"
 	"go.uber.org/zap"
@@ -2720,6 +2721,11 @@ func NewRuntimeProviderGo(ctx context.Context, logger, startupLogger *zap.Logger
 			return nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, errors.New("error returned by InitModule function in Go module")
 		}
 		modulePaths = append(modulePaths, relPath)
+	}
+
+	if err := jumpgo.InitModule(ctx, runtimeLogger, db, nk, initializer); err != nil {
+		startupLogger.Fatal("jumpgo Error returned by InitModule function in Go module", zap.Error(err))
+		return nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, errors.New("error returned by InitModule function in Go module")
 	}
 
 	startupLogger.Info("Go runtime modules loaded")
